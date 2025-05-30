@@ -9,7 +9,7 @@ st.title("📍 Peta Persebaran Restoran di Semarang")
 
 # Load dataset
 file_path = '/mnt/data/semarang_resto_dataset.csv'
-df = pd.read_csv(file_path)
+df = pd.read_csv(semarang_resto_dataset)
 
 # Tampilkan jumlah data
 st.markdown(f"Jumlah restoran: **{len(df)}**")
