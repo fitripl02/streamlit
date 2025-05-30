@@ -22,4 +22,4 @@ for _, row in df.iterrows():
     ).add_to(marker_cluster)
 
 m.save("peta_restoran_semarang.html")
-print("✅ Peta berhasil disimpan sebagai 'peta_restoran_semarang.html'")
+print
