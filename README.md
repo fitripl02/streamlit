@@ -1,4 +1,3 @@
-#streamlit
 # Peta Restoran Semarang
 
 pip install -r requirements.txt
