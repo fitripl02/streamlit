@@ -5,7 +5,7 @@ from streamlit_folium import st_folium
 import streamlit as st
 
 st.set_page_config(page_title="Peta Restoran Semarang", layout="wide")
-st.title("📍 Peta Persebaran Restoran di Semarang")
+st.title("Peta Persebaran Restoran di Semarang")
 
 # Load dataset
 file_path = '/mnt/data/semarang_resto_dataset.csv'
