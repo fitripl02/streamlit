@@ -1,2 +1,6 @@
+streamlit
 pandas
-folium
+matplotlib
+seaborn
+pydeck
+scikit-learn
