@@ -8,6 +8,7 @@ Aplikasi ini dibangun menggunakan **Streamlit** untuk menganalisis dataset resto
 ---
 
 ## 🔗 Buka di Google Colab
+[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fitripl02/streamlit/blob/main/dataset.ipynb)
 
 
  `fitripl02/streamlit`
