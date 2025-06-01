@@ -11,7 +11,7 @@ Aplikasi ini dibangun menggunakan **Streamlit** untuk menganalisis dataset resto
 
 Klik tombol di bawah untuk melatih model dan menyimpan hasilnya:
 
-[![Open In Colab](https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fitripl02/streamlit/blob/main/train_model.ipynb)
+(https://colab.research.google.com/assets/colab-badge.svg)](https://colab.research.google.com/github/fitripl02/streamlit/blob/main/dataset.ipynb)
 
  `fitripl02/streamlit`
 
