@@ -1,1 +1,5 @@
+# Tambahkan hasil klaster ke data asli
+df_filtered["cluster"] = model.predict(X_scaled)
 
+# Simpan hasil clustering
+df_filtered.to_csv("Modul/dataset_clustered.csv", index=False)
