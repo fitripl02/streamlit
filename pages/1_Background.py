@@ -1,6 +1,9 @@
 import streamlit as st
 import pandas as pd
 import numpy as np
+import io
+import matplotlib.pyplot as plt
+import seaborn as sns
 from Module.data_loader import load_data
 from Module.preprocessing import clean_data
 from Module.visualization import show_distributions
@@ -34,13 +37,13 @@ def main():
     show_distributions(data, selected_col)
     
     st.header("3. Korelasi Antar Variabel")
-    corr = data.corr()
+    corr = data.select_dtypes(include=np.number).corr()  # Hanya hitung korelasi untuk numerik
     st.write("### Matriks Korelasi")
     st.dataframe(corr)
     
     st.write("### Heatmap Korelasi")
-    fig, ax = plt.subplots()
-    sns.heatmap(corr, annot=True, ax=ax)
+    fig, ax = plt.subplots(figsize=(10, 8))  # Tambahkan ukuran figure
+    sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
     st.pyplot(fig)
 
 if __name__ == "__main__":
