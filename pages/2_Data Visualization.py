@@ -1,12 +1,15 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
+import joblib
 
-df = pd.read_csv("semarang_resto_dataset.csv")
+st.title("📈 Hasil Penelitian Model")
 
-st.header("Visualisasi Data Restoran")
+st.subheader("📂 Model yang Digunakan")
+st.write("Model clustering/prediksi: KMeans (misalnya)")
 
-fig, ax = plt.subplots()
-sns.histplot(df["rating"], bins=10, kde=True, ax=ax)
-st.pyplot(fig)
+# Contoh: tampilkan cluster yang telah diprediksi
+data = pd.read_csv("Modul/dataset_clustered.csv")  # Dataset hasil model
+st.write(data.head())
+
+st.subheader("📍Distribusi Klaster")
+st.bar_chart(data['cluster'].value_counts())
