@@ -1,1 +1,10 @@
+import pandas as pd
 
+# Load file asli
+df = pd.read_csv("semarang_resto_dataset.csv")
+
+# Pilih kolom numerik penting
+df_filtered = df[["Rating", "ReviewCount"]]  # Ubah sesuai kolom asli
+
+# Simpan
+df_filtered.to_csv("Modul/dataset.csv", index=False)
