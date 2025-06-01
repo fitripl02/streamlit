@@ -1,9 +1,7 @@
 from sklearn.cluster import KMeans
 import joblib
 
-# Melatih model
 model = KMeans(n_clusters=3, random_state=42)
-model.fit(X_scaled)  # Pastikan X_scaled sudah dibuat di bawah
+model.fit(X_scaled)
 
-# Simpan model
 joblib.dump(model, "Modul/model.pkl")
