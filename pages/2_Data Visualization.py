@@ -28,9 +28,9 @@ if "resto_type" in df.columns:
     st.subheader("🍽️ Jenis Restoran Paling Umum")
     st.bar_chart(df["resto_type"].value_counts().head(10))
 
-   if len(df.columns) > 4:
+if len(df.columns) > 4:
     st.warning("Pair plot dengan banyak variabel mungkin sulit dibaca. Pertimbangkan untuk memilih subset data.")
-
+     
 if __name__ == "__main__":
     main()
 
