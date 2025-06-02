@@ -32,9 +32,3 @@ Pendekatan yang digunakan dalam dashboard ini adalah:
 - **PCA (Principal Component Analysis)**: Untuk menyederhanakan data menjadi 2 dimensi guna keperluan visualisasi klaster
 
 """)
-
-    sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
-    st.pyplot(fig)
-
-if __name__ == "__main__":
-    main()
