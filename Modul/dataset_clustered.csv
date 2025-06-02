@@ -1,3 +1,0 @@
-df_filtered["cluster"] = model.predict(X_scaled)
-
-df_filtered.to_csv("Modul/dataset_clustered.csv", index=False)
