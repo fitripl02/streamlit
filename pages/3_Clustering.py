@@ -8,34 +8,36 @@ import seaborn as sns
 
 st.title("🤖 Halaman 2: Klastering Restoran (KMeans)")
 
+# --- 1. Load dataset
 url = "https://raw.githubusercontent.com/fitripl02/streamlit/refs/heads/main/semarang_resto_dataset.csv"
 df = pd.read_csv(url)
 
-# Ambil kolom numerik 
-features = ['resto_rating', 'operation_hours', 'wifi', 'toilet', 'cash_only']
-df_model = df[features].dropna()
+# --- 2. Ambil fitur numerik yang valid
+numerik_cols = ['resto_rating', 'operation_hours', 'rating_number', 'cash_payment_only', 'debit_card_payment']
+df_numerik = df[numerik_cols].dropna().copy()  # tambahkan .copy() untuk menghindari warning
 
-# Standardisasi
+# --- 3. Standardisasi fitur
 scaler = StandardScaler()
-X_scaled = scaler.fit_transform(df_model)
+X_scaled = scaler.fit_transform(df_numerik)
 
-# KMeans
-kmeans = KMeans(n_clusters=3, random_state=42)
-clusters = kmeans.fit_predict(X_scaled)
-df_model['cluster'] = clusters
+# --- 4. Klastering KMeans
+kmeans = KMeans(n_clusters=3, n_init=10, random_state=42)  # n_init penting untuk versi terbaru
+labels = kmeans.fit_predict(X_scaled)
+df_numerik['cluster'] = labels
 
-# PCA untuk visualisasi 2D
+# --- 5. PCA untuk visualisasi
 pca = PCA(n_components=2)
 pca_result = pca.fit_transform(X_scaled)
-df_model['pca1'] = pca_result[:, 0]
-df_model['pca2'] = pca_result[:, 1]
+df_numerik['pca1'] = pca_result[:, 0]
+df_numerik['pca2'] = pca_result[:, 1]
 
-# Visualisasi Klaster
+# --- 6. Visualisasi klaster
 st.subheader("📌 Visualisasi Hasil Klaster")
 fig, ax = plt.subplots()
-sns.scatterplot(data=df_model, x='pca1', y='pca2', hue='cluster', palette='Set1', ax=ax)
+sns.scatterplot(data=df_numerik, x='pca1', y='pca2', hue='cluster', palette='Set2', ax=ax)
 st.pyplot(fig)
 
+# --- 7. Tampilkan data hasil klaster
 st.subheader("📄 Contoh Data Terklaster")
-st.dataframe(df_model.head())
+st.dataframe(df_numerik.head())
 
