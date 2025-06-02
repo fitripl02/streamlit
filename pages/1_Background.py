@@ -1,48 +1,38 @@
 import streamlit as st
-import pandas as pd
-import numpy as np
-import io
-import matplotlib.pyplot as plt
-import seaborn as sns
-from Module.data_loader import load_data
-from Module.preprocessing import clean_data
-from Module.visualization import show_distributions
 
-def main():
-    st.title("Dataset dan Analisis Eksploratori (EDA)")
-    
-    # Load data
-    data = load_data()
-    
-    st.header("1. Tinjauan Dataset")
-    st.write("### 5 Baris Pertama Data")
-    st.dataframe(data.head())
-    
-    st.write("### Statistik Deskriptif")
-    st.dataframe(data.describe())
-    
-    st.write("### Informasi Dataset")
-    buffer = io.StringIO()
-    data.info(buf=buffer)
-    st.text(buffer.getvalue())
-    
-    st.header("2. Karakteristik Data")
-    st.write("### Nilai yang Hilang")
-    missing = data.isna().sum()
-    st.bar_chart(missing[missing > 0])
-    
-    st.write("### Distribusi Variabel Numerik")
-    num_cols = data.select_dtypes(include=np.number).columns
-    selected_col = st.selectbox("Pilih variabel untuk dilihat distribusinya", num_cols)
-    show_distributions(data, selected_col)
-    
-    st.header("3. Korelasi Antar Variabel")
-    corr = data.select_dtypes(include=np.number).corr()  # Hanya hitung korelasi untuk numerik
-    st.write("### Matriks Korelasi")
-    st.dataframe(corr)
-    
-    st.write("### Heatmap Korelasi")
-    fig, ax = plt.subplots(figsize=(10, 8))  # Tambahkan ukuran figure
+st.title("📚 Latar Belakang")
+
+st.markdown("""
+Di era digital saat ini, **industri kuliner dan restoran berkembang pesat**, khususnya di kota-kota besar seperti **Semarang**.  
+Dengan banyaknya pilihan restoran yang tersedia, **pemilik usaha** maupun **pengguna** membutuhkan cara untuk memahami karakteristik dan kualitas restoran secara lebih **objektif dan berbasis data**.
+
+---
+
+### 🎯 Tujuan Analisis
+Dashboard ini dibuat untuk:
+- Melakukan **klasterisasi restoran** di Semarang berdasarkan beberapa fitur penting.
+- Menyediakan **visualisasi interaktif** agar pengguna bisa memahami pola-pola tersembunyi dalam data.
+- Memberikan **formulir prediksi**, sehingga pengguna dapat mengetahui klaster restoran baru berdasarkan input fitur tertentu.
+
+---
+
+### 🧾 Data yang Digunakan
+Dataset berisi informasi mengenai restoran di Semarang, dengan fitur seperti:
+- **Rating restoran**
+- **Jam operasional**
+- **Fasilitas (wifi, toilet)**
+- **Metode pembayaran (tunai)**
+
+---
+
+### 🧠 Metode Analisis
+Pendekatan yang digunakan dalam dashboard ini adalah:
+- **EDA (Exploratory Data Analysis)**: Untuk memahami distribusi dan pola data
+- **KMeans Clustering**: Untuk mengelompokkan restoran berdasarkan kemiripan fitur numerik
+- **PCA (Principal Component Analysis)**: Untuk menyederhanakan data menjadi 2 dimensi guna keperluan visualisasi klaster
+
+""")
+
     sns.heatmap(corr, annot=True, fmt=".2f", cmap='coolwarm', ax=ax)
     st.pyplot(fig)
 
