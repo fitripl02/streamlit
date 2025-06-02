@@ -13,8 +13,13 @@ url = "https://raw.githubusercontent.com/fitripl02/streamlit/refs/heads/main/sem
 df = pd.read_csv(url)
 
 # --- 2. Ambil fitur numerik yang valid
-numerik_cols = ['resto_rating', 'operation_hours', 'rating_number', 'cash_payment_only', 'debit_card_payment']
-df_numerik = df[numerik_cols].dropna().copy()  # tambahkan .copy() untuk menghindari warning
+expected_cols = ['rating', 'hours_open', 'wifi', 'cash_only', 'debit']
+missing_cols = [col for col in expected_cols if col not in df.columns]
+
+if missing_cols:
+    st.error(f"Kolom berikut tidak ditemukan di dataset: {missing_cols}")
+else:
+    df_numerik = df[expected_cols].dropna().copy()
 
 # --- 3. Standardisasi fitur
 scaler = StandardScaler()
