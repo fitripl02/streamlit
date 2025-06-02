@@ -16,7 +16,9 @@ df = pd.read_csv(url)
 
 # --- 2. Kolom numerik untuk clustering
 numerik_cols = ['rating', 'rating_number', 'operating_hours', 'wifi', 'toilet', 'cash_only', 'debit_card']
+st.write("Jumlah baris sebelum dibersihkan:", len(df[numerik_cols]))
 df_numerik = df[numerik_cols].dropna().copy()
+st.write("Jumlah baris setelah dropna:", len(df_numerik))
 
 # --- 3. Standardisasi
 scaler = StandardScaler()
