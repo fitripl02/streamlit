@@ -11,7 +11,7 @@ st.title("🤖 Halaman 2: Klastering Restoran (KMeans)")
 url = "https://raw.githubusercontent.com/fitripl02/streamlit/refs/heads/main/semarang_resto_dataset.csv"
 df = pd.read_csv(url)
 
-# Ambil kolom numerik (pastikan kolom ini ada di dataset)
+# Ambil kolom numerik 
 features = ['resto_rating', 'operation_hours', 'wifi', 'toilet', 'cash_only']
 df_model = df[features].dropna()
 
