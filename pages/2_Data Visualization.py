@@ -31,4 +31,6 @@ if "resto_type" in df.columns:
    if len(df.columns) > 4:
     st.warning("Pair plot dengan banyak variabel mungkin sulit dibaca. Pertimbangkan untuk memilih subset data.")
 
+if __name__ == "__main__":
+    main()
 
