@@ -1,4 +1,4 @@
-import streamlit as st
+import streamlit as st 
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
@@ -13,6 +13,10 @@ df = pd.read_csv(url)
 st.subheader("🔍 Data Restoran")
 st.dataframe(df.head())
 
+# Tampilkan jumlah restoran
+st.subheader("🔢 Jumlah Restoran dalam Dataset")
+st.write(f"Total restoran: **{df.shape[0]}**")
+
 # Statistik deskriptif
 st.subheader("📊 Statistik Deskriptif")
 st.write(df.describe())
@@ -23,7 +27,7 @@ fig, ax = plt.subplots()
 sns.histplot(df["resto_rating"], bins=10, kde=True, ax=ax)
 st.pyplot(fig)
 
-# Bar chart type restoran
+# Bar chart jenis restoran
 if "resto_type" in df.columns:
     st.subheader("🍽️ Jenis Restoran Paling Umum")
     st.bar_chart(df["resto_type"].value_counts().head(10))
