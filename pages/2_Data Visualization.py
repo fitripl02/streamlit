@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 
 st.title("📈 Halaman 1: Eksplorasi Data Restoran")
 
-# Load dataset dari GitHub (gunakan raw URL GitHub jika di-deploy)
+# Load dataset dari GitHub 
 url = "https://raw.githubusercontent.com/fitripl02/streamlit/refs/heads/main/semarang_resto_dataset.csv"
 df = pd.read_csv(url)
 
@@ -28,7 +28,7 @@ if "resto_type" in df.columns:
     st.subheader("🍽️ Jenis Restoran Paling Umum")
     st.bar_chart(df["resto_type"].value_counts().head(10))
 
-if len(df.columns) > 4:
+if len(df.columns) > 10:
     st.warning("Pair plot dengan banyak variabel mungkin sulit dibaca. Pertimbangkan untuk memilih subset data.")
      
 if __name__ == "__main__":
