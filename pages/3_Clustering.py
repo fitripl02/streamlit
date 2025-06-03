@@ -1,69 +1,50 @@
 import streamlit as st
 import pandas as pd
-from sklearn.preprocessing import StandardScaler
-from sklearn.cluster import KMeans
-from sklearn.decomposition import PCA
+import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
+from sklearn.metrics import confusion_matrix, classification_report
+import joblib
 
-st.set_option('deprecation.showPyplotGlobalUse', False)
+st.title("🔄 Halaman 4: Hasil Analisis Churn Pelanggan")
 
-st.title("🤖 Halaman 2: Hasil Pelatihan Model Klasterisasi")
+# Simulasi data churn (jika belum ada data asli)
+st.info("📌 Contoh simulasi hasil model churn pelanggan")
 
-# --- 1. Load data
-url = "https://raw.githubusercontent.com/fitripl02/streamlit/refs/heads/main/semarang_resto_dataset.csv"
-df = pd.read_csv(url)
+# Simulasi data prediksi & hasil
+y_true = np.random.choice([0, 1], size=200, p=[0.7, 0.3])  # 0 = loyal, 1 = churn
+y_pred = y_true.copy()
+noise = np.random.choice([0, 1], size=200, p=[0.9, 0.1])
+y_pred = np.abs(y_pred - noise)  # simulasikan prediksi keliru
 
-# --- 2. Kolom numerik untuk clustering
-numerik_cols = ['rating', 'rating_number', 'operating_hours', 'wifi', 'toilet', 'cash_only', 'debit_card']
-st.write("Jumlah baris sebelum dibersihkan:", len(df[numerik_cols]))
-df_numerik = df[numerik_cols].dropna().copy()
-st.write("Jumlah baris setelah dropna:", len(df_numerik))
+# Classification report
+report = classification_report(y_true, y_pred, output_dict=True)
+report_df = pd.DataFrame(report).transpose()
 
-# --- 3. Standardisasi
-scaler = StandardScaler()
-X_scaled = scaler.fit_transform(df_numerik)
+st.subheader("📊 Classification Report")
+st.dataframe(report_df.style.format(precision=2))
 
-# --- 4. KMeans
-kmeans = KMeans(n_clusters=3, n_init=10, random_state=42)
-labels = kmeans.fit_predict(X_scaled)
-df_numerik['cluster'] = labels
-
-# --- 5. PCA untuk visualisasi 2D
-pca = PCA(n_components=2)
-pca_result = pca.fit_transform(X_scaled)
-df_numerik['pca1'] = pca_result[:, 0]
-df_numerik['pca2'] = pca_result[:, 1]
-
-# --- 6. Visualisasi klaster
-st.subheader("📍 Visualisasi Klaster dalam 2D (PCA)")
+# Confusion matrix
+st.subheader("🧮 Confusion Matrix")
+cm = confusion_matrix(y_true, y_pred)
 fig, ax = plt.subplots()
-sns.scatterplot(data=df_numerik, x='pca1', y='pca2', hue='cluster', palette='Set2', ax=ax)
-plt.title("Visualisasi Klaster Restoran")
-plt.xlabel("PCA Komponen 1")
-plt.ylabel("PCA Komponen 2")
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Loyal", "Churn"], yticklabels=["Loyal", "Churn"])
+plt.xlabel("Prediksi")
+plt.ylabel("Aktual")
 st.pyplot(fig)
 
-# --- 7. Hasil Model: Centroid, Inertia, Distribusi
-st.subheader("📈 Hasil Pelatihan Model KMeans")
+# Simulasi feature importance
+st.subheader("📌 Fitur yang Paling Mempengaruhi Churn")
+feature_importance = pd.Series({
+    "Frekuensi Kunjungan": 0.35,
+    "Rata-rata Rating": 0.25,
+    "Jenis Restoran": 0.15,
+    "Jumlah Transaksi": 0.12,
+    "Area Lokasi": 0.13
+}).sort_values(ascending=True)
 
-# Inertia (evaluasi internal)
-st.markdown(f"- **Skor inertia**: {kmeans.inertia_:.2f}")
-
-# Distribusi klaster
-st.markdown("- **Jumlah anggota per klaster**:")
-st.write(df_numerik['cluster'].value_counts().sort_index())
-
-# Centroid (kembalikan ke skala asli)
-st.subheader("📌 Titik Pusat Tiap Klaster (Centroid)")
-centroids = pd.DataFrame(
-    scaler.inverse_transform(kmeans.cluster_centers_),
-    columns=numerik_cols
-)
-centroids.index = [f"Klaster {i}" for i in range(kmeans.n_clusters)]
-st.dataframe(centroids)
-
-# --- 8. Tabel hasil
-st.subheader("📄 Contoh Data Terklaster")
-st.dataframe(df_numerik.head(10))
+fig2, ax2 = plt.subplots()
+feature_importance.plot(kind="barh", ax=ax2, color='teal')
+ax2.set_xlabel("Tingkat Pengaruh")
+st.pyplot(fig2)
 
