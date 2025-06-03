@@ -34,4 +34,3 @@ X_test.to_csv("X_test_rating.csv", index=False)
 y_test.to_csv("y_test_rating.csv", index=False)
 
 print("✅ Model dan data uji berhasil disimpan.")
-
