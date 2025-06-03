@@ -12,7 +12,9 @@ st.title("🔄 Halaman 4: Hasil Analisis Churn Pelanggan")
 try:
     model = joblib.load("churn_model.pkl")
     X_test = pd.read_csv("X_test.csv")
-    y_test = pd.read_csv("y_test.csv").squeeze() 
+    y_test = pd.read_csv("y_test.csv").squeeze()  # Pastikan Series, bukan DataFrame
+except:
+    st.warning("📂 File model atau data uji tidak ditemukan. Menampilkan simulasi hasil.")
     
     # Simulasi prediksi
     y_test = np.random.choice([0, 1], size=200, p=[0.7, 0.3])
@@ -73,4 +75,3 @@ feature_importance.plot(kind="barh", ax=ax2, color='darkorange')
 ax2.set_xlabel("Tingkat Kepentingan")
 ax2.set_ylabel("Fitur")
 st.pyplot(fig2)
-
