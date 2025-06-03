@@ -9,7 +9,7 @@ Selamat datang di dashboard interaktif untuk eksplorasi dan analisis klaster res
 Navigasi:
 - **Background**: Latar belakang dan tujuan
 - **Data Visualization**: EDA dan insight awal
-- **Clustering**: Hasil model klaster
+- **Hasil Analisis**: Hasil model Analisis
 - **Prediction Form**: Formulir prediksi untuk data baru
 """)
 
