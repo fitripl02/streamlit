@@ -6,7 +6,7 @@ import seaborn as sns
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, precision_score, recall_score, f1_score
 import joblib
 
-st.title("🔄 Halaman 4: Hasil Analisis Churn Pelanggan")
+st.title("🔄 Halaman 4: Hasil Analisis")
 
 # === 1. Load Model dan Data Validasi ===
 try:
@@ -14,7 +14,7 @@ try:
     X_test = pd.read_csv("X_test.csv")
     y_test = pd.read_csv("y_test.csv").squeeze() 
 except:
-    st.warning("Analisis ini adalah contoh cukan hasil sesungguhnya.")
+    st.warning("Analisis ini adalah contoh bukan hasil sesungguhnya.")
     
     # Simulasi prediksi
     y_test = np.random.choice([0, 1], size=200, p=[0.7, 0.3])
