@@ -14,7 +14,7 @@ try:
     X_test = pd.read_csv("X_test.csv")
     y_test = pd.read_csv("y_test.csv").squeeze() 
 except:
-    st.warning(" File model ini adalah contoh tidak hasi yang sesungguhnya.")
+    st.warning(" File model ini adalah contoh tidak hasil yang sesungguhnya.")
     
     # Simulasi prediksi
     y_test = np.random.choice([0, 1], size=200, p=[0.7, 0.3])
