@@ -31,4 +31,5 @@ Pendekatan yang digunakan dalam dashboard ini adalah:
 - **KMeans Clustering**: Untuk mengelompokkan restoran berdasarkan kemiripan fitur numerik
 - **PCA (Principal Component Analysis)**: Untuk menyederhanakan data menjadi 2 dimensi guna keperluan visualisasi klaster
 
+### Dibuat dengan cinta oleh kelompok 5
 """)
