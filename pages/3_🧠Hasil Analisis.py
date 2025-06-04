@@ -1,60 +1,80 @@
 import streamlit as st
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier, RandomForestRegressor
-from sklearn.metrics import classification_report, mean_squared_error
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import accuracy_score, classification_report
+from sklearn.preprocessing import LabelEncoder
 
 # Load dataset
 @st.cache_data
 def load_data():
-    return pd.read_csv("semarang_resto_dataset.csv")
+    data = pd.read_csv('semarang_resto_dataset.csv')
+    return data
 
 data = load_data()
-
-# Sidebar Navigation
-st.sidebar.title("Navigasi")
-page = st.sidebar.radio("Pilih Halaman:", ["EDA", "Model & Prediksi", "Formulir Prediksi"])
-
-# Halaman 2: Model dan Form Prediksi
-elif page == "Model & Prediksi":
-    st.title("Model Pelatihan dan Prediksi")
-
-    st.write("## Model Klasifikasi: Rating Tinggi")
-    data_clf = data.dropna(subset=['rating'])
-    data_clf['high_rating'] = (data_clf['rating'] >= 4.5).astype(int)
-    X_clf = data_clf.select_dtypes(include=[np.number]).drop(columns=['rating', 'jumlah_pengunjung', 'high_rating'])
-    y_clf = data_clf['high_rating']
-    Xc_train, Xc_test, yc_train, yc_test = train_test_split(X_clf, y_clf, stratify=y_clf, random_state=42)
-    clf_model = RandomForestClassifier(random_state=42)
-    clf_model.fit(Xc_train, yc_train)
-    yc_pred = clf_model.predict(Xc_test)
-    st.text("Classification Report:")
-    st.text(classification_report(yc_test, yc_pred))
-
-    st.write("## Model Regresi: Jumlah Pengunjung")
-    data_reg = data.dropna(subset=['jumlah_pengunjung'])
-    X_reg = data_reg.select_dtypes(include=[np.number]).drop(columns=['rating', 'jumlah_pengunjung'])
-    y_reg = data_reg['jumlah_pengunjung']
-    Xr_train, Xr_test, yr_train, yr_test = train_test_split(X_reg, y_reg, random_state=42)
-    regr_model = RandomForestRegressor(random_state=42)
-    regr_model.fit(Xr_train, yr_train)
-    yr_pred = regr_model.predict(Xr_test)
-    mse = mean_squared_error(yr_test, yr_pred)
-    st.write("Mean Squared Error:", mse)
-
-    st.write("## Form Prediksi")
-    st.write("Masukkan fitur numerik untuk memprediksi rating tinggi dan jumlah pengunjung.")
-    input_data = {}
-    for col in X_clf.columns:
-        input_data[col] = st.number_input(f"{col}", value=float(data[col].mean()))
-    input_df = pd.DataFrame([input_data])
-
-    pred_class = clf_model.predict(input_df)[0]
-    pred_reg = regr_model.predict(input_df)[0]
-
-    st.write("### Hasil Prediksi:")
-    st.write("Prediksi Rating Tinggi:", "Ya" if pred_class else "Tidak")
-    st.write("Prediksi Jumlah Pengunjung:", int(pred_reg))
+# Halaman 2: Model Training
+elif page == "Model Training":
+    st.title("Pelatihan Model Prediksi Rating Restoran")
+    
+    # Persiapan data
+    st.write("### Persiapan Data untuk Model")
+    
+    # Pilih fitur dan target
+    features = ['resto_type', 'rating_numbers', 'average_operation_hours', 
+                'cash_payment_only', 'debit_card_payment', 'credit_card_payment',
+                'wifi_facility', 'sell_halal_food', 'vegetarian_menu', 'delivery']
+    target = 'resto_rating'
+    
+    # Encode categorical features
+    le = LabelEncoder()
+    data['resto_type_encoded'] = le.fit_transform(data['resto_type'])
+    
+    # Bagi data menjadi fitur dan target
+    X = data[['resto_type_encoded', 'rating_numbers', 'average_operation_hours', 
+              'cash_payment_only', 'debit_card_payment', 'credit_card_payment',
+              'wifi_facility', 'sell_halal_food', 'vegetarian_menu', 'delivery']]
+    y = data[target]
+    
+    # Bagi data menjadi train dan test set
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+    
+    st.write(f"Jumlah data training: {X_train.shape[0]}")
+    st.write(f"Jumlah data testing: {X_test.shape[0]}")
+    
+    # Latih model
+    st.write("### Pelatihan Model Random Forest")
+    
+    # Parameter model
+    n_estimators = st.slider("Jumlah Estimator", 10, 200, 100)
+    max_depth = st.slider("Kedalaman Maksimum", 2, 20, 10)
+    
+    if st.button("Latih Model"):
+        model = RandomForestClassifier(n_estimators=n_estimators, max_depth=max_depth, random_state=42)
+        model.fit(X_train, y_train)
+        
+        # Prediksi dan evaluasi
+        y_pred = model.predict(X_test)
+        accuracy = accuracy_score(y_test, y_pred)
+        
+        st.write("### Hasil Evaluasi Model")
+        st.write(f"Akurasi Model: {accuracy:.2f}")
+        
+        st.write("#### Laporan Klasifikasi")
+        report = classification_report(y_test, y_pred, output_dict=True)
+        report_df = pd.DataFrame(report).transpose()
+        st.write(report_df)
+        
+        # Feature importance
+        st.write("#### Feature Importance")
+        feature_importance = pd.DataFrame({
+            'Feature': X.columns,
+            'Importance': model.feature_importances_
+        }).sort_values('Importance', ascending=False)
+        
+        fig, ax = plt.subplots(figsize=(10, 6))
+        sns.barplot(x='Importance', y='Feature', data=feature_importance, ax=ax)
+        ax.set_title('Feature Importance')
+        st.pyplot(fig)
