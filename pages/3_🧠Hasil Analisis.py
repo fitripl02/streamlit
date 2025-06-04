@@ -1,36 +1,55 @@
+import streamlit as st
 import pandas as pd
-from sklearn.model_selection import train_test_split
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.preprocessing import LabelEncoder
-import joblib
+import numpy as np
+from sklearn.cluster import KMeans
+from sklearn.preprocessing import StandardScaler
 
-# Load data
-df = pd.read_csv("semarang_resto_dataset.csv")
+# Konfigurasi halaman
+st.set_page_config(page_title="Prediksi Klaster Restoran", page_icon="🔮", layout="wide")
 
-# Buat label target: 1 jika rating ≥ 4.5, else 0
-df["high_rating"] = (df["resto_rating"] >= 4.5).astype(int)
+# Judul halaman
+st.title("🔮 Prediksi Klaster untuk Restoran Baru")
+st.markdown("""
+**Gunakan tool ini untuk memprediksi ke klaster mana restoran baru akan masuk berdasarkan karakteristiknya.**
+""")
 
-# Drop kolom tidak relevan
-drop_cols = ["resto_id", "resto_name", "resto_rating", "resto_address"]
-df = df.drop(columns=drop_cols)
+# Load dataset
+@st.cache_data
+def load_data():
+    return pd.read_csv('semarang_resto_dataset.csv')
 
-# Encode kolom kategorikal
-df["resto_type"] = LabelEncoder().fit_transform(df["resto_type"])
+df = load_data()
 
-# Pisahkan fitur dan target
-X = df.drop(columns=["high_rating"])
-y = df["high_rating"]
+# Pilih fitur untuk clustering
+features = ['resto_rating', 'average_operation_hours', 'wifi_facility', 'toilet_facility', 'cash_payment_only']
+X = df[features]
 
-# Split data
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+# Scaling data
+scaler = StandardScaler()
+X_scaled = scaler.fit_transform(X)
 
-# Model
-model = RandomForestClassifier(random_state=42)
-model.fit(X_train, y_train)
+# Clustering dengan KMeans
+kmeans = KMeans(n_clusters=3, random_state=42, n_init=10)
+kmeans.fit(X_scaled)
+df['cluster'] = kmeans.predict(X_scaled)
 
-# Simpan model & data uji
-joblib.dump(model, "rating_classifier.pkl")
-X_test.to_csv("X_test_rating.csv", index=False)
-y_test.to_csv("y_test_rating.csv", index=False)
+# Deskripsi klaster (contoh interpretasi)
+cluster_descriptions = {
+    0: "Restoran biasa dengan fasilitas terbatas",
+    1: "Restoran premium dengan fasilitas lengkap",
+    2: "Restoran dengan jam operasi panjang tapi fasilitas minimal"
+}
 
-print("✅ Model dan data uji berhasil disimpan.")
+# Sidebar untuk input user
+st.sidebar.header("🛠️ Parameter Restoran Baru")
+resto_rating = st.sidebar.slider("Rating Restoran (1-5)", 1.0, 5.0, 3.5, 0.1)
+operation_hours = st.sidebar.slider("Rata-rata Jam Operasi per Hari", 1.0, 24.0, 12.0, 0.5)
+wifi = st.sidebar.radio("Fasilitas Wifi", [("Tersedia", 1), ("Tidak Tersedia", 0)], index=0)[1]
+toilet = st.sidebar.radio("Fasilitas Toilet", [("Tersedia", 1), ("Tidak Tersedia", 0)], index=0)[1]
+cash_only = st.sidebar.radio("Pembayaran", [("Tunai Saja", 1), ("Menerima Non-Tunai", 0)], index=1)[1]
+
+# Tombol prediksi
+if st.sidebar.button("🚀 Prediksi Klaster", help="Klik untuk memprediksi klaster"):
+    # Preprocessing input
+    input_data = np.array([[resto_rating, operation_hours, wifi, toilet, cash_only]])
+    user
