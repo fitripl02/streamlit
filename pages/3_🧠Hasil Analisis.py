@@ -4,63 +4,47 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
-from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split
+import joblib
 
-st.set_page_config(page_title="Halaman 3: Hasil Analisis", layout="wide")
-st.title("🔄 Halaman 3: Hasil Evaluasi Model Klasifikasi Rating Tinggi")
+st.title("🔄 Halaman 4: Hasil Analisis Churn Pelanggan")
 
-# Load data
-@st.cache_data
-def load_data():
-    return pd.read_csv("semarang_resto_dataset.csv")
+# Simulasi data churn (jika belum ada data asli)
+st.info("📌 Contoh simulasi hasil model churn pelanggan")
 
-data = load_data()
+# Simulasi data prediksi & hasil
+y_true = np.random.choice([0, 1], size=200, p=[0.7, 0.3])  # 0 = loyal, 1 = churn
+y_pred = y_true.copy()
+noise = np.random.choice([0, 1], size=200, p=[0.9, 0.1])
+y_pred = np.abs(y_pred - noise)  # simulasikan prediksi keliru
 
-# Siapkan data klasifikasi: Rating tinggi >= 4.5
-data = data.dropna(subset=['rating'])
-data['high_rating'] = (data['rating'] >= 4.5).astype(int)
-
-# Fitur yang digunakan
-features = ['average_operation_hours', 'wifi_facility', 'toilet_facility', 'cash_payment_only']
-X = data[features]
-y = data['high_rating']
-
-# Split train/test
-X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
-
-# Model
-model = RandomForestClassifier(random_state=42)
-model.fit(X_train, y_train)
-y_pred = model.predict(X_test)
-
-# ======= 📊 Classification Report =======
-st.subheader("📊 Classification Report")
-report = classification_report(y_test, y_pred, output_dict=True)
+# Classification report
+report = classification_report(y_true, y_pred, output_dict=True)
 report_df = pd.DataFrame(report).transpose()
+
+st.subheader("📊 Classification Report")
 st.dataframe(report_df.style.format(precision=2))
 
-# ======= 🧮 Confusion Matrix =======
+# Confusion matrix
 st.subheader("🧮 Confusion Matrix")
-cm = confusion_matrix(y_test, y_pred)
-labels = ["Rating < 4.5", "Rating ≥ 4.5"]
-
+cm = confusion_matrix(y_true, y_pred)
 fig, ax = plt.subplots()
-sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=labels, yticklabels=labels, ax=ax)
-ax.set_xlabel("Prediksi")
-ax.set_ylabel("Aktual")
-ax.set_title("Confusion Matrix")
+sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Loyal", "Churn"], yticklabels=["Loyal", "Churn"])
+plt.xlabel("Prediksi")
+plt.ylabel("Aktual")
 st.pyplot(fig)
 
-# ======= 📌 Feature Importance =======
-st.subheader("📌 Fitur yang Paling Mempengaruhi Prediksi Rating")
-importances = model.feature_importances_
-feat_df = pd.Series(importances, index=features).sort_values()
+# Simulasi feature importance
+st.subheader("📌 Fitur yang Paling Mempengaruhi Churn")
+feature_importance = pd.Series({
+    "Frekuensi Kunjungan": 0.35,
+    "Rata-rata Rating": 0.25,
+    "Jenis Restoran": 0.15,
+    "Jumlah Transaksi": 0.12,
+    "Area Lokasi": 0.13
+}).sort_values(ascending=True)
 
 fig2, ax2 = plt.subplots()
-feat_df.plot(kind='barh', ax=ax2, color='seagreen')
+feature_importance.plot(kind="barh", ax=ax2, color='teal')
 ax2.set_xlabel("Tingkat Pengaruh")
-ax2.set_title("Feature Importance (Random Forest)")
 st.pyplot(fig2)
-
 
