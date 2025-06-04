@@ -16,31 +16,6 @@ def load_data():
 
 data = load_data()
 
-# Sidebar Navigation
-st.sidebar.title("Navigasi")
-page = st.sidebar.radio("Pilih Halaman:", ["EDA", "Model & Prediksi", "Formulir Prediksi"])
-
-# Halaman 1: EDA
-if page == "EDA":
-    st.title("Eksplorasi Data Restoran Semarang")
-    st.write("### Dataset")
-    st.dataframe(data.head())
-
-    st.write("### Ringkasan Statistik")
-    st.write(data.describe())
-
-    st.write("### Korelasi antar Fitur")
-    corr = data.select_dtypes(include=np.number).corr()
-    fig, ax = plt.subplots()
-    sns.heatmap(corr, annot=True, cmap='coolwarm', ax=ax)
-    st.pyplot(fig)
-
-    st.write("### Distribusi Rating")
-    fig, ax = plt.subplots()
-    sns.histplot(data['rating'], bins=20, kde=True, ax=ax)
-    st.pyplot(fig)
-
-# Halaman 2: Model & Prediksi
 elif page == "Model & Prediksi":
     st.title("📊 Halaman 2: Hasil Pelatihan Model & Prediksi")
 
@@ -90,19 +65,6 @@ elif page == "Model & Prediksi":
         st.success("📈 Hasil Prediksi")
         st.write(f"• Prediksi Rating Tinggi: {'✅ Ya' if pred_rating else '❌ Tidak'}")
         st.write(f"• Prediksi Jumlah Pengunjung: {int(pred_pengunjung)} orang")
-
-# Halaman 3: Formulir Prediksi Klaster
-elif page == "Formulir Prediksi":
-    st.title("🔮 Halaman 3: Prediksi Klaster Restoran Baru")
-
-    # Pilih fitur untuk clustering
-    features = ['resto_rating', 'average_operation_hours', 'wifi_facility', 'toilet_facility', 'cash_payment_only']
-    df = data.dropna(subset=features)
-    X = df[features]
-
-    # Scaling data
-    scaler = StandardScaler()
-    X_scaled = scaler.fit_transform(X)
 
     # Clustering dengan KMeans
     kmeans = KMeans(n_clusters=3, random_state=42)
