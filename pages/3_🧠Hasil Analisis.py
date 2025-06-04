@@ -4,47 +4,48 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 from sklearn.metrics import confusion_matrix, classification_report
-import joblib
 
-st.title("🔄 Halaman 4: Hasil Analisis Churn Pelanggan")
+st.set_page_config(page_title="Halaman 3: Simulasi Analisis", layout="wide")
+st.title("📈 Halaman 3: Simulasi Evaluasi Model Rating Tinggi")
 
-# Simulasi data churn (jika belum ada data asli)
-st.info("📌 Contoh simulasi hasil model churn pelanggan")
+st.info("🧪 Ini adalah simulasi hasil analisis prediksi apakah sebuah restoran mendapat rating tinggi (≥ 4.5)")
 
-# Simulasi data prediksi & hasil
-y_true = np.random.choice([0, 1], size=200, p=[0.7, 0.3])  # 0 = loyal, 1 = churn
-y_pred = y_true.copy()
-noise = np.random.choice([0, 1], size=200, p=[0.9, 0.1])
-y_pred = np.abs(y_pred - noise)  # simulasikan prediksi keliru
+# ===== Simulasi Prediksi =====
+np.random.seed(42)  # agar hasil konsisten
+y_true = np.random.choice([0, 1], size=300, p=[0.75, 0.25])  # 0 = <4.5, 1 = ≥4.5
+noise = np.random.binomial(1, 0.1, size=300)  # 10% error
+y_pred = np.abs(y_true - noise)
 
-# Classification report
+# ===== Classification Report =====
 report = classification_report(y_true, y_pred, output_dict=True)
 report_df = pd.DataFrame(report).transpose()
 
-st.subheader("📊 Classification Report")
+st.subheader("📊 Simulasi Classification Report")
 st.dataframe(report_df.style.format(precision=2))
 
-# Confusion matrix
+# ===== Confusion Matrix =====
 st.subheader("🧮 Confusion Matrix")
 cm = confusion_matrix(y_true, y_pred)
+labels = ["Rating < 4.5", "Rating ≥ 4.5"]
 fig, ax = plt.subplots()
-sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", xticklabels=["Loyal", "Churn"], yticklabels=["Loyal", "Churn"])
-plt.xlabel("Prediksi")
-plt.ylabel("Aktual")
+sns.heatmap(cm, annot=True, fmt="d", cmap="YlGnBu", xticklabels=labels, yticklabels=labels, ax=ax)
+ax.set_xlabel("Prediksi")
+ax.set_ylabel("Aktual")
 st.pyplot(fig)
 
-# Simulasi feature importance
-st.subheader("📌 Fitur yang Paling Mempengaruhi Churn")
+# ===== Simulasi Feature Importance =====
+st.subheader("📌 Simulasi Fitur yang Mempengaruhi Rating Tinggi")
 feature_importance = pd.Series({
-    "Frekuensi Kunjungan": 0.35,
-    "Rata-rata Rating": 0.25,
-    "Jenis Restoran": 0.15,
-    "Jumlah Transaksi": 0.12,
-    "Area Lokasi": 0.13
-}).sort_values(ascending=True)
+    "Jam Operasional": 0.30,
+    "Tersedia Wifi": 0.25,
+    "Ada Toilet": 0.18,
+    "Hanya Tunai": 0.12,
+    "Jenis Restoran": 0.15
+}).sort_values()
 
 fig2, ax2 = plt.subplots()
-feature_importance.plot(kind="barh", ax=ax2, color='teal')
+feature_importance.plot(kind="barh", ax=ax2, color='darkorange')
 ax2.set_xlabel("Tingkat Pengaruh")
+ax2.set_title("Simulasi Feature Importance")
 st.pyplot(fig2)
 
